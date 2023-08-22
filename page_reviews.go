@@ -12,9 +12,6 @@ import (
 func Go_details(table string, db *sql.DB, broswer *rod.Browser, url string) {
 	var lock sync.Mutex
 	m := sync.Map{}
-	if strings.Contains(url, "other-road") || strings.Contains(url, "other-trike") {
-		return //这两个分类下的车辆是空，不爬取
-	}
 	page := broswer.MustPage(url)
 	fmt.Println("=====================================")
 	fmt.Println("page_index:", url)
