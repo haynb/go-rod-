@@ -31,8 +31,7 @@ func main() {
 		name = strings.ReplaceAll(name, "-", "_")
 		fmt.Println("gogogo!!!!!!!!!!!!!!!!!!!!!!!!")
 		//连接数据库
-		//db, err := sql.Open("mysql", "root:heanyang@tcp(154.12.244.129:8848)/Category?charset=utf8mb4&parseTime=True")
-		db, err := sql.Open("mysql", "root:heanyang@tcp(10.199.1.41:8848)/Category?charset=utf8mb4&parseTime=True")
+		db, err := sql.Open("mysql", "root:heanyang@tcp(**.1*.1.**:****)/Category?charset=utf8mb4&parseTime=True")
 		if err != nil {
 			panic(err)
 		}
