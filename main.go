@@ -27,6 +27,7 @@ func main() {
 	category := page.MustElementsX("//*[@id=\"picabout\"]/div[2]/div/div")
 	// 分三个类别，前置中置和后置
 	for _, c := range category[1:] {
+		// table是一个同一张表的列缓存，防止重复创建列
 		table := make(map[string]bool)
 		////创建表
 		name := c.MustElementX("div[1]/h4").MustText()
@@ -76,6 +77,7 @@ func main() {
 					list_r[len(list_r)-1] = list_r[len(list_r)-1] + "," + right
 					continue
 				}
+				// 本电机内部数据进行去重
 				if list[left] == 0 {
 					list[left] = k
 					list_l = append(list_l, left)
@@ -89,7 +91,7 @@ func main() {
 					list_r[list[left]] = list_r[list[left]] + "," + right
 				}
 			}
-			//if query_l != "ALTER TABLE "+name {
+			// 如果有新的列，就创建新的列
 			if query_l != "ALTER TABLE "+name {
 				query_l = query_l[:len(query_l)-1] //去掉最后一个逗号
 				query_l += ";"                     //添加分号
@@ -106,7 +108,6 @@ func main() {
 			//去掉最后一个逗号
 			list_l_str = list_l_str[:len(list_l_str)-1]
 			// 插入数据
-			//fmt.Println(list_l_str)
 			query := "INSERT INTO " + name + " (`name`, `image`, " + list_l_str + ") VALUES (?, ?, " + strings.Repeat("?, ", len(list_r)-1) + "?)"
 			// 防注入
 			stmt, err := db.Prepare(query)
