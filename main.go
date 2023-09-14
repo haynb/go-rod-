@@ -83,7 +83,7 @@ func main() {
 					list_l = append(list_l, left)
 					list_r = append(list_r, right)
 					if !table[left] {
-						query_l += " ADD COLUMN `" + left + "` text,"
+						query_l += " ADD COLUMN `" + left + "` varchar(100)," //构造sql语句
 						table[left] = true
 					}
 				} else {
