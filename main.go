@@ -33,7 +33,7 @@ func main() {
 		////创建表
 		name := tableName[i]
 		fmt.Println(name)
-		_, err = db.Exec("CREATE TABLE IF NOT EXISTS " + name + " ( `id` int auto_increment,name char(100) default 'Error', image varchar(800) default 'Error',primary key(id),INDEX name (name)); ")
+		_, err = db.Exec("CREATE TABLE IF NOT EXISTS " + name + " ( `id` int auto_increment,name char(100) default 'Error', image varchar(800) default 'Error',url varchar(200),primary key(id),INDEX name (name)); ")
 		if err != nil {
 			panic(err)
 		}
@@ -109,14 +109,14 @@ func main() {
 			//去掉最后一个逗号
 			list_l_str = list_l_str[:len(list_l_str)-1]
 			// 插入数据
-			query := "INSERT INTO " + name + " (`name`, `image`, " + list_l_str + ") VALUES (?, ?, " + strings.Repeat("?, ", len(list_r)-1) + "?)"
+			query := "INSERT INTO " + name + " (`name`, `image`, `url`, " + list_l_str + ") VALUES (?, ?, ?, " + strings.Repeat("?, ", len(list_r)-1) + "?)"
 			// 防注入
 			stmt, err := db.Prepare(query)
 			if err != nil {
 				panic(err)
 			}
 			defer stmt.Close()
-			params := []interface{}{motorName, img}
+			params := []interface{}{motorName, img, link}
 			for _, item := range list_r {
 				params = append(params, item)
 			}
