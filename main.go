@@ -16,7 +16,7 @@ func main() {
 	defer broswer.MustClose()
 	baseUrl := "https://ananda.com.cn/"
 	page := broswer.MustPage("https://ananda.com.cn/index.php/chinese/product/index.html")
-	db, err := sql.Open("mysql", "root:heanyang@tcp(10.199.1.41:8848)/motor?charset=utf8mb4&parseTime=True")
+	db, err := sql.Open("mysql", "root:heanyang@tcp(10.199.1.41:8848)/爬虫?charset=utf8mb4&parseTime=True")
 	if err != nil {
 		panic(err)
 	}
@@ -26,11 +26,12 @@ func main() {
 	page.MustWaitDOMStable()
 	category := page.MustElementsX("//*[@id=\"picabout\"]/div[2]/div/div")
 	// 分三个类别，前置中置和后置
-	for _, c := range category[1:] {
+	tableName := []string{"motor_Mid", "motor_Front", "motor_Rear"}
+	for i, c := range category[1:] {
 		// table是一个同一张表的列缓存，防止重复创建列
 		table := make(map[string]bool)
 		////创建表
-		name := c.MustElementX("div[1]/h4").MustText()
+		name := tableName[i]
 		fmt.Println(name)
 		_, err = db.Exec("CREATE TABLE IF NOT EXISTS " + name + " ( `id` int auto_increment,name char(100) default 'Error', image varchar(800) default 'Error',primary key(id),INDEX name (name)); ")
 		if err != nil {
