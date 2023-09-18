@@ -15,7 +15,7 @@ func main() {
 	broswer := rod.New().ControlURL(u).MustConnect()
 	defer broswer.MustClose()
 	baseUrl := "https://www.bafang-e.com/"
-	page := broswer.MustPage("https://www.bafang-e.com/en/oem-area/components/motor/m-series")
+	page := broswer.MustPage("https://www.bafang-e.com/en/oem-area/components/motor/hr-series")
 	page.MustWaitDOMStable()
 	db, err := sql.Open("mysql", "root:heanyang@tcp(10.199.1.41:8848)/爬虫?charset=utf8mb4&parseTime=True")
 	if err != nil {
@@ -41,13 +41,15 @@ func main() {
 	var left string
 	leftList := make(map[string]bool)
 	comm := map[string]string{
-		"Max Torque (N.m)":             "Max Torque (Nm)",
-		"Nominal Voltage (Vdc)":        "Rated Voltage (DC)",
-		"Pedal Sensor":                 "Sensor",
-		"IP":                           "Tests",
-		"E-Brake":                      "e-Brake",
-		"Light Drive Capacity (Vdc/W)": "Light Drive Capacity",
-		"Weight (kg)":                  "Weight(kg)",
+		"Max Torque (N.m)":                  "Max Torque (Nm)",
+		"Nominal Voltage (Vdc)":             "Rated Voltage (DC)",
+		"Pedal Sensor":                      "Sensor",
+		"IP":                                "Tests",
+		"Brake":                             "Brake Type",
+		"Cabling Route":                     "Cable Routing",
+		"Cable Length (mm),Connection Type": "Cable Length (mm)",
+		"Weight (kg)":                       "Weight(kg)",
+		"Spoke Specification":               "Spoke Spectification",
 	}
 	var (
 		left_l []string
@@ -83,7 +85,7 @@ func main() {
 		//去掉最后一个逗号
 		list_l_str = list_l_str[:len(list_l_str)-1]
 		// 插入数据
-		query := "INSERT INTO " + "motor_Mid" + " (`name`, `url`, `image`, " + list_l_str + ") VALUES (?, ?, ?, " + strings.Repeat("?, ", len(list_r)-1) + "?)"
+		query := "INSERT INTO " + "motor_Rear" + " (`name`, `url`, `image`, " + list_l_str + ") VALUES (?, ?, ?, " + strings.Repeat("?, ", len(list_r)-1) + "?)"
 		// 防注入
 		stmt, err := db.Prepare(query)
 		if err != nil {
