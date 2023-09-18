@@ -15,7 +15,7 @@ func main() {
 	broswer := rod.New().ControlURL(u).MustConnect()
 	defer broswer.MustClose()
 	baseUrl := "https://www.bafang-e.com/"
-	page := broswer.MustPage("https://www.bafang-e.com/en/oem-area/components/motor/hr-series")
+	page := broswer.MustPage("https://www.bafang-e.com/en/oem-area/components/motor/hf-series")
 	page.MustWaitDOMStable()
 	db, err := sql.Open("mysql", "root:heanyang@tcp(10.199.1.41:8848)/爬虫?charset=utf8mb4&parseTime=True")
 	if err != nil {
@@ -85,7 +85,7 @@ func main() {
 		//去掉最后一个逗号
 		list_l_str = list_l_str[:len(list_l_str)-1]
 		// 插入数据
-		query := "INSERT INTO " + "motor_Rear" + " (`name`, `url`, `image`, " + list_l_str + ") VALUES (?, ?, ?, " + strings.Repeat("?, ", len(list_r)-1) + "?)"
+		query := "INSERT INTO " + "motor_Front" + " (`name`, `url`, `image`, " + list_l_str + ") VALUES (?, ?, ?, " + strings.Repeat("?, ", len(list_r)-1) + "?)"
 		// 防注入
 		stmt, err := db.Prepare(query)
 		if err != nil {
