@@ -15,7 +15,7 @@ func main() {
 	broswer := rod.New().ControlURL(u).MustConnect()
 	defer broswer.MustClose()
 	baseUrl := "https://www.bafang-e.com/"
-	page := broswer.MustPage("https://www.bafang-e.com/cn/oem-area/components/motor/m-series")
+	page := broswer.MustPage("https://www.bafang-e.com/en/oem-area/components/motor/m-series")
 	page.MustWaitDOMStable()
 	db, err := sql.Open("mysql", "root:heanyang@tcp(10.199.1.41:8848)/爬虫?charset=utf8mb4&parseTime=True")
 	if err != nil {
@@ -41,25 +41,13 @@ func main() {
 	var left string
 	leftList := make(map[string]bool)
 	comm := map[string]string{
-		"重量（kg）":       "Weight(kg)",
-		"最大扭矩（N.m）":    "Max Torque (Nm)",
-		"颜色":           "Color",
-		"额定功率（W）":      "Rated Power (W)",
-		"额定电压（Vdc）":    "Rated Voltage (DC)",
-		"助力传感器":        "Sensor",
-		"认证":           "Certifications",
-		"中轴标准":         "Shaft Standard",
-		"防水、防尘等级":      "Tests",
-		"电子刹把":         "e-Brake",
-		"照明用电力（Vdc/W）": "Light Drive Capacity",
-	}
-	cnToEn := map[string]string{
-		"轮径（Inch）":   "Wheel Diameter (Inch)",
-		"智能模式":       "Intelligent Mode",
-		"导链器":        "Chain Guide",
-		"最高时速（km/h）": "Max Speed (km/h)",
-		"油门转把":       "Throttle",
-		"速度限制(km/h)": "Speed Limit (km/h)",
+		"Max Torque (N.m)":             "Max Torque (Nm)",
+		"Nominal Voltage (Vdc)":        "Rated Voltage (DC)",
+		"Pedal Sensor":                 "Sensor",
+		"IP":                           "Tests",
+		"E-Brake":                      "e-Brake",
+		"Light Drive Capacity (Vdc/W)": "Light Drive Capacity",
+		"Weight (kg)":                  "Weight(kg)",
 	}
 	var (
 		left_l []string
@@ -79,10 +67,7 @@ func main() {
 				if _, ok := comm[left]; ok {
 					left = comm[left]
 				}
-				if _, ok := cnToEn[left]; ok {
-					left = cnToEn[left]
-				}
-				if left == "安装位置" {
+				if left == "Position" {
 					continue
 				}
 				left_l = append(left_l, left)
