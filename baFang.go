@@ -15,7 +15,8 @@ func main() {
 	broswer := rod.New().ControlURL(u).MustConnect()
 	defer broswer.MustClose()
 	baseUrl := "https://www.bafang-e.com/"
-	page := broswer.MustPage("https://www.bafang-e.com/en/oem-area/components/motor/m-series")
+	page := broswer.MustPage("https://www.bafang-e.com/cn/oem-area/components/motor/m-series")
+	page.MustWaitDOMStable()
 	db, err := sql.Open("mysql", "root:heanyang@tcp(10.199.1.41:8848)/爬虫?charset=utf8mb4&parseTime=True")
 	if err != nil {
 		panic(err)
@@ -64,7 +65,7 @@ func main() {
 		left_l []string
 		list_r []string
 	)
-	for _, motor := range motorList {
+	for m, motor := range motorList {
 		page = broswer.MustPage(motor)
 		page.MustWaitLoad()
 		motorName := page.MustElementX("//*[@id=\"breadcrumbcontent\"]/ul/li[4]").MustText()
@@ -81,13 +82,15 @@ func main() {
 				if _, ok := cnToEn[left]; ok {
 					left = cnToEn[left]
 				}
+				if left == "安装位置" {
+					continue
+				}
 				left_l = append(left_l, left)
 				list_r = append(list_r, right)
 			} else {
 				continue
 			}
 		}
-		left_l = append(left_l, "image")
 		var list_l_str string
 		for _, item := range left_l {
 			list_l_str = list_l_str + "`" + item + "`,"
@@ -95,14 +98,14 @@ func main() {
 		//去掉最后一个逗号
 		list_l_str = list_l_str[:len(list_l_str)-1]
 		// 插入数据
-		query := "INSERT INTO " + "motor_Mid" + " (`name`, `image`, `url`, " + list_l_str + ") VALUES (?, ?, ?, " + strings.Repeat("?, ", len(list_r)-1) + "?)"
+		query := "INSERT INTO " + "motor_Mid" + " (`name`, `url`, `image`, " + list_l_str + ") VALUES (?, ?, ?, " + strings.Repeat("?, ", len(list_r)-1) + "?)"
 		// 防注入
 		stmt, err := db.Prepare(query)
 		if err != nil {
 			panic(err)
 		}
 		defer stmt.Close()
-		params := []interface{}{motorName, img, motor}
+		params := []interface{}{motorName, motor, img[m]}
 		for _, item := range list_r {
 			params = append(params, item)
 		}
